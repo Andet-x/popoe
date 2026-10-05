@@ -8,16 +8,51 @@ const img2 = 'media/pic2.png';
 // Создаем объект аудио один раз при загрузке страницы
 const audio = new Audio('media/sound.mp3');
 
-// Обработчик нажатия на кнопку
+// Переменные для счетчика кликов
+let localClicksToSend = 0; 
+let globalClicksCount = 0; 
+
+// Находим элемент счетчика в HTML
+const globalCounterElement = document.getElementById('global-counter');
+
+// Функция синхронизации с сервером
+async function syncClicks() {
+    try {
+        // Используем относительный путь window.location.origin, чтобы точно попасть на бэкенд через домен
+        const response = await fetch(`${window.location.origin}/api/clicks`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ count: localClicksToSend })
+        });
+        
+        // Сбрасываем только те клики, которые успешно отправили
+        localClicksToSend = 0; 
+
+        const data = await response.json();
+        globalClicksCount = data.clicks;
+        
+        // Выводим цифру на экран
+        if (globalCounterElement) {
+            globalCounterElement.innerText = globalClicksCount.toLocaleString(); 
+        }
+        
+    } catch (error) {
+        console.error("Ошибка синхронизации с сервером:", error);
+        if (globalCounterElement) {
+            globalCounterElement.innerText = "Ошибка соединения";
+        }
+    }
+}
+
+// ОБЪЕДИНЕННЫЙ Обработчик нажатия на кнопку
 button.addEventListener('click', () => {
-    // Прерываем прошлый звук и сбрасываем его в начало
+    // 1. Логика счетчика (копим клик для сервера)
+    localClicksToSend++; 
+
+    // 2. Ваша логика звука и картинок
     audio.pause();
     audio.currentTime = 0; 
-    
-    // Включаем вторую картинку при старте звука
     image.setAttribute('src', img2);
-    
-    // Воспроизводим звук заново (мгновенно и без наложения)
     audio.play();
 });
 
@@ -25,3 +60,9 @@ button.addEventListener('click', () => {
 audio.addEventListener('ended', () => {
     image.setAttribute('src', img1);
 });
+
+// Регистрируем интервал обновления (раз в 2 секунды)
+setInterval(syncClicks, 2000);
+
+// Вызываем сразу при старте страницы, чтобы убрать надпись "Загрузка..."
+syncClicks();
