@@ -1,0 +1,53 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background-color: #f4f4f9;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Оставляем верхнюю часть для кнопки */
+}
+
+.controls {
+    margin-top: 50px;
+    z-index: 10; /* Кнопка всегда должна быть поверх картинки */
+}
+
+button {
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.1s, background-color 0.2s;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/* Фиксация картинки у нижней границы экрана */
+.bottom-image-container {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%); /* Центрируем по горизонтали */
+    width: 100%;
+    max-width: 600px; /* Ограничиваем максимальную ширину для красоты */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.bottom-image-container img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 100vh; /* Картинка не займет больше 40% высоты экрана */
+    object-fit: contain;
+}
