@@ -46,6 +46,9 @@ async function syncClicks() {
 
 // ОБЪЕДИНЕННЫЙ Обработчик нажатия на кнопку
 button.addEventListener('click', () => {
+    // 0. Анимация уменьшения картинки при клике (на 100 миллисекунд)
+    image.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.92)' }, { transform: 'scale(1)' }], { duration: 100 });
+    
     // 1. Логика счетчика (копим клик для сервера)
     localClicksToSend++; 
 
