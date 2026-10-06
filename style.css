@@ -9,27 +9,26 @@ body {
     align-items: flex-start; /* Оставляем верхнюю часть для кнопки */
 }
 
+.head-panel {
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .controls {
-    margin-top: 50px;
+    margin: 50px 0px;   ;
     z-index: 10; /* Кнопка всегда должна быть поверх картинки */
 }
 
-button {
-    padding: 15px 30px;
-    font-size: 18px;
-    font-weight: bold;
-    color: white;
-    background-color: #e74c3c;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: transform 0.1s, background-color 0.2s;
+#action-btn {
+    background: transparent;
+    border: transparent;
 }
 
-button:active {
+/* button:active {
     transform: scale(0.95);
-}
+} */
 
 /* Фиксация картинки у нижней границы экрана */
 .bottom-image-container {
@@ -44,11 +43,15 @@ button:active {
     align-items: flex-end;
 }
 
+#target-img {
+    transform-origin: bottom center; /* Указывает сжимать картинку к нижней границе */
+}
+
 .bottom-image-container img {
     display: block;
     width: 100%;
     height: auto;
-    max-height: 50vh; /* Картинка не займет больше 40% высоты экрана */
+    max-height: 60vh; /* Картинка не займет больше 40% высоты экрана */
     object-fit: contain;
 }
 .global-counter-container {
@@ -64,7 +67,7 @@ button:active {
 
 .global-counter-label {
     font-size: 16px;
-    color: #555;
+     color: #555;
     margin-right: 8px;
 }
 
