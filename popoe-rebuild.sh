@@ -26,11 +26,11 @@ docker build -t $IMAGE_NAME .
 # 4. Запускаем новый контейнер с сохранением файла базы данных
 echo "Starting new container on port $PORT..."
 docker run -d \
-  -p $PORT:3000 \
-  --name $CONTAINER_NAME \
-  -v $(pwd)/clicks.db:/tmp/clicks.db \
-  --restart unless-stopped \
-  $IMAGE_NAME
+ -p $PORT:3000 \
+ --name $CONTAINER_NAME \
+ -v $(pwd)/clicks.db:/app/clicks.db \
+ --restart unless-stopped \
+ $IMAGE_NAME
 
 echo "=== ✅ Обновление успешно завершено! ==="
 echo "Сайт доступен и продолжает использовать существующую БД clicks.db."
