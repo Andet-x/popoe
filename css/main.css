@@ -6,7 +6,7 @@ body {
     height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Оставляем верхнюю часть для кнопки */
+    align-items: flex-start;
 }
 
 .head-panel {
@@ -53,28 +53,6 @@ body {
     height: auto;
     max-height: 60vh; /* Картинка не займет больше 40% высоты экрана */
     object-fit: contain;
-}
-.global-counter-container {
-    text-align: center;
-    margin: 20px auto;
-    font-family: Arial, sans-serif;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 10px 20px;
-    border-radius: 50px;
-    display: inline-block;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.global-counter-label {
-    font-size: 16px;
-     color: #555;
-    margin-right: 8px;
-}
-
-#global-counter {
-    font-size: 24px;
-    font-weight: bold;
-    color: #ff4757; /* Яркий цвет для цифр */
 }
 
 /* Кнопка магазина */

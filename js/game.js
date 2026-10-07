@@ -1,17 +1,82 @@
 // Текущее состояние игры
-let coins = 0;
+let coins = 0; // Теперь это счетчик текущей сессии
 let activeHat = null; // Сюда запишется объект шляпы, когда игрок её наденет
+
+// Переменная для накопления кликов перед отправкой на сервер (чтобы не спамить запросами каждую миллисекунду)
+let pendingClicks = 0; 
 
 const mainImg = document.getElementById('character-main');
 const hatImg = document.getElementById('character-hat');
 const scoreDisplay = document.getElementById('score-display');
+const globalScoreDisplay = document.getElementById('global-score-display'); // НОВЫЙ элемент
 const clickArea = document.getElementById('click-area');
 const popAudio = new Audio('assets/popoe.mp3');
 
 popAudio.preload = 'auto';
 popAudio.volume = 1.0;
 
-// Имитация функции надевания шляпы (вызывается из вашего будущего GUI магазина)
+// === НОВАЯ ФУНКЦИЯ: Загрузка глобальных кликов с сервера при старте игры ===
+async function fetchGlobalClicks() {
+    try {
+        const response = await fetch('/api/clicks');
+        if (!response.ok) throw new Error(`Ошибка сервера: ${response.status}`);
+        
+        const data = await response.json();
+        if (globalScoreDisplay && data.clicks !== undefined) {
+            globalScoreDisplay.innerText = data.clicks;
+        }
+    } catch (error) {
+        console.error("Ошибка получения глобальных кликов:", error);
+        // Выводим статус ошибки на экран вместо нуля
+        if (globalScoreDisplay) {
+            globalScoreDisplay.innerText = "Ошибка 📡";
+            globalScoreDisplay.style.color = "#ff4757"; // Красный цвет для ошибки
+        }
+    }
+}
+// Запускаем получение данных сразу при инициализации скрипта
+fetchGlobalClicks();
+
+// === НОВАЯ ФУНКЦИЯ: Отправка накопленных кликов в базу данных ===
+async function sendClicksToServer() {
+    if (pendingClicks <= 0) return;
+
+    const clicksToSend = pendingClicks;
+    pendingClicks = 0; 
+
+    try {
+        const response = await fetch('/api/clicks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ count: clicksToSend })
+        });
+        
+        if (!response.ok) throw new Error(`Ошибка сервера: ${response.status}`);
+
+        const data = await response.json();
+        if (globalScoreDisplay && data.clicks !== undefined) {
+            globalScoreDisplay.innerText = data.clicks;
+            globalScoreDisplay.style.color = "#ffcc00"; // Возвращаем золотой цвет при успехе
+        }
+    } catch (error) {
+        console.error("Ошибка отправки кликов на сервер:", error);
+        pendingClicks += clicksToSend; 
+        
+        if (globalScoreDisplay) {
+            globalScoreDisplay.innerText = "Офлайн 🚫";
+            globalScoreDisplay.style.color = "#ff4757";
+        }
+    }
+}
+
+// Отправляем данные каждые 3 секунды (оптимально для баз данных, чтобы не ломать сервер)
+setInterval(sendClicksToServer, 3000);
+
+// Отправляем клики также при закрытии или обновлении страницы пользователем
+window.addEventListener('beforeunload', sendClicksToServer);
+
+
+// Имитация функции надевания шляпы
 function equipHat(hatObject) {
     activeHat = hatObject;
     if (!activeHat) {
@@ -38,26 +103,28 @@ function updateHatPosition(state) {
 }
 
 // Обработка клика
-// Вынесли общую логику клика в отдельную функцию
 function handlePopAction(clientX, clientY) {
     // Включаем стадию КРИКА
     mainImg.src = "assets/character_pop.png";
     updateHatPosition('pop');
 
-    popAudio.currentTime = 0; // Сбрасываем в начало, чтобы можно было спамить кликами
+    popAudio.currentTime = 0; 
     popAudio.play().catch(e => console.log("Ждем первого взаимодействия со страницей"));
 
-    // Начисляем монеты
+    // 1. Начисляем монеты за ТЕКУЩУЮ СЕССИЮ (Новый код)
     coins++;
     scoreDisplay.innerText = coins;
+
+    // 2. Добавляем клик в буфер для отправки на СЕРВЕР (Старая логика)
+    pendingClicks++;
 
     // Считаем редкость клика случайным образом
     let rarity = "common";
     const rand = Math.random() * 100;
-    if (rand > 95) rarity = "legendary"; // 5% шанс
-    else if (rand > 80) rarity = "rare";  // 15% шанс
+    if (rand > 95) rarity = "legendary"; 
+    else if (rand > 80) rarity = "rare";  
 
-    // Вызываем облачко из вашего модуля, передавая координаты клика/тача
+    // Вызываем облачко
     if (typeof BubblesModule !== 'undefined' && BubblesModule.create) {
         BubblesModule.create(clientX, clientY, rarity);
     } else {
@@ -73,40 +140,27 @@ function handlePopAction(clientX, clientY) {
     }
 }
 
-// Срабатывает в момент нажатия (пальцем или мышкой)
+// Срабатывает в момент нажатия
 clickArea.addEventListener('pointerdown', (e) => {
-    // Блокируем дефолтное поведение (двойной зум на мобилках, выделение картинок на ПК)
     e.preventDefault(); 
-    
-    // Сбрасываем таймер при новом клике, чтобы персонаж не закрыл рот раньше времени
     if (idleTimeoutId) clearTimeout(idleTimeoutId);
-
-    // Вызываем логику клика и передаем точные координаты указателя
     handlePopAction(e.clientX, e.clientY);
 });
 
-// Возвращаем персонажа в стадию покоя, когда палец убрали или отпустили кнопку мыши
-// 1. Создаем переменную для хранения ID таймера (выше функций)
 let idleTimeoutId = null;
 
 // Функция возврата в обычное состояние
 function resetCharacterState() {
-    // Удаляем старый таймер, если он уже был запущен
     if (idleTimeoutId) clearTimeout(idleTimeoutId);
 
-    // Запускаем новый таймер заново
     idleTimeoutId = setTimeout(() => {
         mainImg.src = "assets/character_idle.png";
         updateHatPosition('idle');
-    }, 270); // Задержка в xx мс
+    }, 270); 
 }
 
 clickArea.addEventListener('pointerup', resetCharacterState);
-
-// Дополнительно: возвращаем в покой, если мышка/палец ушли за пределы кликабельной зоны, не отжимаясь
 clickArea.addEventListener('pointerleave', resetCharacterState);
-
-// Возвращаем персонажа в стадию покоя, когда палец убрали
 clickArea.addEventListener('touchend', () => {
     mainImg.src = "assets/character_idle.png";
     updateHatPosition('idle');
