@@ -1,0 +1,26 @@
+{
+  "hats": [
+    {
+      "id": "santa_hat",
+      "name": "Новогодняя шапка",
+      "rarity": "common",
+      "cost": 100,
+      "idle_image": "assets/hats/santa_idle.png",
+      "pop_image": "assets/hats/santa_pop.png",
+      "offset_y_idle": -45,
+      "offset_y_pop": -65,
+      "offset_x": 0
+    },
+    {
+      "id": "cyber_glasses",
+      "name": "Кибер-очки",
+      "rarity": "legendary",
+      "cost": 1500,
+      "idle_image": "assets/hats/glasses_idle.png",
+      "pop_image": "assets/hats/glasses_pop.png",
+      "offset_y_idle": 10,
+      "offset_y_pop": 5,
+      "offset_x": 0
+    }
+  ]
+}

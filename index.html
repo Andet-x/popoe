@@ -2,31 +2,52 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Popoe clicker</title>
-    <link rel="icon" type="image/ico" href="favicon.ico">
-    <link rel="stylesheet" href="style.css">
+    <!-- Блокируем зум на мобильных для плавной игры -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Popoe Clicker</title>
+    <link rel="icon" type="image/ico" href="assets/favicon.ico">
+    <!-- Подключаем Telegram API -->
+    <script src="https://telegram.org"></script>
+    
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/game.css">
+    <link rel="stylesheet" href="css/bubbles.css">
 </head>
 <body>
-    <div class="head-panel">
-        <div class="global-counter-container">
-            <span class="global-counter-label">Всего кликов в мире:</span>
-            <span id="global-counter">Загрузка...</span>
+
+    <div id="game-container">
+        <div id="head-panel">
+            <!-- Кнопка открытия магазина -->
+            <button id="shop-open-btn">🎩 Магазин</button>
+            <!-- Всплывающее окно магазина (по умолчанию скрыто) -->
+            <div id="shop-modal" class="hidden">
+                <div class="shop-content">
+                    <div class="shop-header">
+                        <h2>Магазин шляп</h2>
+                        <button id="shop-close-btn">❌</button>
+                    </div>
+                    <!-- Сюда скрипт будет автоматически добавлять карточки шляп -->
+                    <div id="hats-list"></div>
+                </div>
+            </div>
         </div>
-
-        <!-- <div class="controls">
-            <button id="action-btn">Кликни меня!</button>
-        </div> -->
+        
+            <div id="score-display" class="global-counter-container">0</div>
+        
+        <!-- Контейнер кликера -->
+        <div id="click-area">
+            <!-- <button id="action-btn"> -->
+                <!-- Слой со шляпой (по умолчанию пустой) -->
+                <img id="character-hat" src="" alt="" style="display: none;">
+                <!-- Сам персонаж -->
+                <img id="character-main" src="assets/character_idle.png" alt="Popoe">
+            <!-- </button> -->
+        </div>
     </div>
 
-    <!-- Контейнер для картинки, прижатой к низу -->
-    <div class="bottom-image-container">
-        <button id="action-btn">
-            <img id="target-img" src="media/pic1.png" alt="Динамическое изображение">
-        </button>
-    </div>
-
-    <script src="script.js"></script>
-
+    <!-- Скрипты разделены по зонам ответственности -->
+    <script src="js/app.js"></script>
+    <script src="js/bubbles.js"></script>
+    <script src="js/game.js"></script>
 </body>
 </html>

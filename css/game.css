@@ -1,0 +1,52 @@
+/* СТАРЫЙ КОД + НОВЫЙ КОНТЕЙНЕР ШЛЯП */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a1a; /* ваш старый цвет фона или любой темный */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    /* Ограничение под формат экрана телефона */
+    /* max-width: 450px; */
+}
+
+/* Контейнер, где персонаж и шляпа лежат друг на друге */
+#click-area {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;  /* Подстройте под размеры вашего персонажа */
+    max-width: 450px; /* Ограничение под формат экрана телефона */
+    height: 40vh;
+    max-height: 40vh; /* Картинка не займет больше 40% высоты экрана */
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#character-main {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+#character-hat {
+    position: absolute;
+    width: 120px; /* Примерный размер шляпы, регулируется индивидуально */
+    height: auto;
+    transform: translateX(-50%); /* Центрирование по оси X относительно точки привязки */
+    pointer-events: none; /* Клик проходит сквозь шляпу на персонажа */
+    z-index: 10;
+}

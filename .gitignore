@@ -3,3 +3,4 @@ node_modules/
 !.netlify/results.md
 .env
 .env.*
+start.sh

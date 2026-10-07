@@ -1,0 +1,170 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background-color: #f4f4f9;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Оставляем верхнюю часть для кнопки */
+}
+
+.head-panel {
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.controls {
+    margin: 50px 0px;   ;
+    z-index: 10; /* Кнопка всегда должна быть поверх картинки */
+}
+
+#action-btn {
+    background: transparent;
+    border: transparent;
+}
+
+/* button:active {
+    transform: scale(0.95);
+} */
+
+/* Фиксация картинки у нижней границы экрана */
+.bottom-image-container {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%); /* Центрируем по горизонтали */
+    width: 100%;
+    max-width: 600px; /* Ограничиваем максимальную ширину для красоты */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+#target-img {
+    transform-origin: bottom center; /* Указывает сжимать картинку к нижней границе */
+}
+
+.bottom-image-container img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 60vh; /* Картинка не займет больше 40% высоты экрана */
+    object-fit: contain;
+}
+.global-counter-container {
+    text-align: center;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px 20px;
+    border-radius: 50px;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.global-counter-label {
+    font-size: 16px;
+     color: #555;
+    margin-right: 8px;
+}
+
+#global-counter {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff4757; /* Яркий цвет для цифр */
+}
+
+/* Кнопка магазина */
+#shop-open-btn {
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    background: #ffcc00;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    cursor: pointer;
+}
+
+/* Модальное окно */
+#shop-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+#shop-modal.hidden {
+    display: none;
+}
+
+.shop-content {
+    background: #2a2a2a;
+    width: 90%;
+    max-width: 400px;
+    max-height: 70vh;
+    border-radius: 20px;
+    padding: 20px;
+    color: white;
+    overflow-y: auto; /* Скролл, если шляп много */
+}
+
+.shop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#shop-close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Список карточек */
+.hat-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #3a3a3a;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+}
+
+.hat-card img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.hat-info {
+    flex-grow: 1;
+    margin-left: 15px;
+}
+
+.hat-info h4 { margin: 0; font-size: 16px; }
+.hat-info span { font-size: 12px; color: #ffcc00; }
+
+.buy-btn {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.buy-btn.equipped { background: #2196f3; }
