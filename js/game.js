@@ -38,13 +38,8 @@ function updateHatPosition(state) {
 }
 
 // Обработка клика
-clickArea.addEventListener('touchstart', (e) => {
-    // Блокируем дефолтное поведение браузера (двойной зум)
-    e.preventDefault(); 
-    
-    // Получаем координаты касания (берем первый палец)
-    const touch = e.touches[0];
-    
+// Вынесли общую логику клика в отдельную функцию
+function handlePopAction(clientX, clientY) {
     // Включаем стадию КРИКА
     mainImg.src = "assets/character_pop.png";
     updateHatPosition('pop');
@@ -56,14 +51,18 @@ clickArea.addEventListener('touchstart', (e) => {
     coins++;
     scoreDisplay.innerText = coins;
 
-    // Считаем редкость клика случайным образом (для демонстрации)
+    // Считаем редкость клика случайным образом
     let rarity = "common";
     const rand = Math.random() * 100;
     if (rand > 95) rarity = "legendary"; // 5% шанс
     else if (rand > 80) rarity = "rare";  // 15% шанс
 
-    // Вызываем облачко из нашего модуля
-    BubblesModule.create(touch.clientX, touch.clientY, rarity);
+    // Вызываем облачко из вашего модуля, передавая координаты клика/тача
+    if (typeof BubblesModule !== 'undefined' && BubblesModule.create) {
+        BubblesModule.create(clientX, clientY, rarity);
+    } else {
+        console.error("BubblesModule не найден. Проверьте подключение скрипта баблов.");
+    }
 
     // Telegram Вибрация
     if (window.Telegram && window.Telegram.WebApp) {
@@ -72,7 +71,40 @@ clickArea.addEventListener('touchstart', (e) => {
         else if (rarity === "rare") haptic.impactOccurred('medium');
         else haptic.impactOccurred('light');
     }
+}
+
+// Срабатывает в момент нажатия (пальцем или мышкой)
+clickArea.addEventListener('pointerdown', (e) => {
+    // Блокируем дефолтное поведение (двойной зум на мобилках, выделение картинок на ПК)
+    e.preventDefault(); 
+    
+    // Сбрасываем таймер при новом клике, чтобы персонаж не закрыл рот раньше времени
+    if (idleTimeoutId) clearTimeout(idleTimeoutId);
+
+    // Вызываем логику клика и передаем точные координаты указателя
+    handlePopAction(e.clientX, e.clientY);
 });
+
+// Возвращаем персонажа в стадию покоя, когда палец убрали или отпустили кнопку мыши
+// 1. Создаем переменную для хранения ID таймера (выше функций)
+let idleTimeoutId = null;
+
+// Функция возврата в обычное состояние
+function resetCharacterState() {
+    // Удаляем старый таймер, если он уже был запущен
+    if (idleTimeoutId) clearTimeout(idleTimeoutId);
+
+    // Запускаем новый таймер заново
+    idleTimeoutId = setTimeout(() => {
+        mainImg.src = "assets/character_idle.png";
+        updateHatPosition('idle');
+    }, 270); // Задержка в xx мс
+}
+
+clickArea.addEventListener('pointerup', resetCharacterState);
+
+// Дополнительно: возвращаем в покой, если мышка/палец ушли за пределы кликабельной зоны, не отжимаясь
+clickArea.addEventListener('pointerleave', resetCharacterState);
 
 // Возвращаем персонажа в стадию покоя, когда палец убрали
 clickArea.addEventListener('touchend', () => {
