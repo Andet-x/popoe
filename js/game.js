@@ -39,7 +39,7 @@ fetchGlobalClicks();
 
 // === НОВАЯ ФУНКЦИЯ: Отправка накопленных кликов в базу данных ===
 async function sendClicksToServer() {
-    if (pendingClicks <= 0) return;
+    // УДАЛИТЕ ИЛИ ЗАКОММЕНТИРУЙТЕ СТРОКУ: if (pendingClicks <= 0) return;
 
     const clicksToSend = pendingClicks;
     pendingClicks = 0; 
@@ -48,7 +48,8 @@ async function sendClicksToServer() {
         const response = await fetch('/api/clicks', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ count: clicksToSend })
+            // Сервер будет получать 0, если кликов не было, и это нормально
+            body: JSON.stringify({ count: clicksToSend }) 
         });
         
         if (!response.ok) throw new Error(`Ошибка сервера: ${response.status}`);
@@ -56,7 +57,7 @@ async function sendClicksToServer() {
         const data = await response.json();
         if (globalScoreDisplay && data.clicks !== undefined) {
             globalScoreDisplay.innerText = data.clicks;
-            globalScoreDisplay.style.color = "#ffcc00"; // Возвращаем золотой цвет при успехе
+            globalScoreDisplay.style.color = "#ffcc00"; 
         }
     } catch (error) {
         console.error("Ошибка отправки кликов на сервер:", error);
