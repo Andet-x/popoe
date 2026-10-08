@@ -140,6 +140,22 @@ function handlePopAction(clientX, clientY) {
     }
 }
 
+// === БЛОКИРОВКА СИСТЕМНОГО ПОВЕДЕНИЯ (Контекстное меню и перетаскивание) ===
+// Запрещаем вызов контекстного меню (скачивание картинок) на всей игровой области
+clickArea.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+});
+
+// Отдельно запрещаем контекстное меню для самих изображений (критично для iOS/Android)
+mainImg.addEventListener('contextmenu', (e) => e.preventDefault());
+hatImg.addEventListener('contextmenu', (e) => e.preventDefault());
+
+// Запрещаем стандартное перетаскивание картинок браузером (убирает «залипание» на ПК)
+mainImg.addEventListener('dragstart', (e) => e.preventDefault());
+hatImg.addEventListener('dragstart', (e) => e.preventDefault());
+
+
+// === ОБРАБОТЧИКИ КЛИКОВ И АНИМАЦИИ ===
 // Срабатывает в момент нажатия
 clickArea.addEventListener('pointerdown', (e) => {
     e.preventDefault(); 
@@ -159,9 +175,14 @@ function resetCharacterState() {
     }, 270); 
 }
 
+// pointerup и pointerleave отлично работают на ПК и смартфонах, если отключено контекстное меню
 clickArea.addEventListener('pointerup', resetCharacterState);
 clickArea.addEventListener('pointerleave', resetCharacterState);
-clickArea.addEventListener('touchend', () => {
+
+// touchend оставляем для подстраховки мобильных устройств
+clickArea.addEventListener('touchend', (e) => {
+    e.preventDefault(); // Предотвращает ложные двойные «тапы» и зум
     mainImg.src = "assets/character_idle.png";
     updateHatPosition('idle');
 });
+
