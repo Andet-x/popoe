@@ -31,6 +31,10 @@ body {
     max-height: 40vh; /* Картинка не займет больше 40% высоты экрана */
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none;     /* IE/Edge */
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
 #character-main {
@@ -39,6 +43,11 @@ body {
     object-fit: contain;
     user-select: none;
     -webkit-user-drag: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none;     /* IE/Edge */
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
 #character-hat {
@@ -48,6 +57,11 @@ body {
     transform: translateX(-50%); /* Центрирование по оси X относительно точки привязки */
     pointer-events: none; /* Клик проходит сквозь шляпу на персонажа */
     z-index: 10;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none;     /* IE/Edge */
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
 /* Общий контейнер, который выстраивает счетчики в строку */
