@@ -1,12 +1,14 @@
 body {
     margin: 0;
     padding: 0;
+    display: flex;
     font-family: sans-serif;
-    background-color: #f4f4f9;
+    background-color: #1a1a1a; 
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    overflow: hidden;
 }
 
 .head-panel {

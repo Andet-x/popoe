@@ -1,14 +1,3 @@
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #1a1a1a; /* ваш старый цвет фона или любой темный */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden;
-}
-
 #game-container {
     display: flex;
     flex-direction: column;
